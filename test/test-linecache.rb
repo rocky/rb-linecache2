@@ -8,7 +8,7 @@ require 'set'
 class TestLineCache < MiniTest::Test
   @@TEST_DIR = File.expand_path(File.dirname(__FILE__))
   @@TOP_SRC_DIR = File.join(@@TEST_DIR, '..', 'lib')
-  require File.join(@@TOP_SRC_DIR, 'linecache.rb')
+  require File.join(@@TOP_SRC_DIR, 'linecache2.rb')
 
   def setup
     LineCache::clear_file_cache

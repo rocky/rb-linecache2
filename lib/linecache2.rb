@@ -36,7 +36,7 @@
 # source lines.
 #
 #
-#  require 'linecache'
+#  require 'linecache2'
 #  lines = LineCache::getlines('/tmp/myruby.rb')
 #  # The following lines have same effect as the above.
 #  $: << '/tmp'
@@ -59,6 +59,9 @@
 # and never destroys SCRIPT_LINES__
 SCRIPT_LINES__ = {} unless defined? SCRIPT_LINES__
 
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
+
 require 'tempfile'
 require 'digest/sha1'
 require 'set'
@@ -67,7 +70,6 @@ require_relative 'tracelines'
 # = module LineCache
 # A module to read and cache lines of a Ruby program.
 module LineCache
-  VERSION = '1.3.1'
   LineCacheInfo = Struct.new(:stat, :line_numbers, :lines, :path, :sha1) unless
     defined?(LineCacheInfo)
 
@@ -506,7 +508,7 @@ if __FILE__ == $0
     return var ? "" : "not "
   end
 
-  LineCache::getlines(__FILE__)
+  lines = LineCache::getlines(__FILE__)
   puts "#{__FILE__} has #{LineCache.size(__FILE__)} lines"
   line = LineCache::getline(__FILE__, 6)
   puts "The 6th line is\n#{line}"
