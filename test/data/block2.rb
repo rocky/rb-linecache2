@@ -1,4 +1,4 @@
-# [0, 2, 3, 4]
+# [2, 4, 3]
 def foo(&block)
 end
 foo{4}

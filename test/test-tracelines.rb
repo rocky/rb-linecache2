@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
-# $Id$
-require 'test/unit'
+require 'minitest/autorun'
 require 'fileutils'
 require 'tempfile'
 
 SCRIPT_LINES__ = {} unless defined? SCRIPT_LINES__
 # Test TestLineNumbers module
-class TestLineNumbers1 < Test::Unit::TestCase
+class TestLineNumbers1 < MiniTest::Test
 
   @@TEST_DIR = File.expand_path(File.dirname(__FILE__))
   require_relative '../lib/tracelines'
@@ -16,7 +15,7 @@ class TestLineNumbers1 < Test::Unit::TestCase
     first_line = fp.readline[1..-2]
     @@rcov_lnums = eval(first_line, binding, __FILE__, __LINE__)
   }
-  
+
   def test_for_file
     rcov_lines = TraceLineNumbers.lnums_for_file(@@rcov_file)
     assert_equal(@@rcov_lnums, rcov_lines)
@@ -25,12 +24,12 @@ class TestLineNumbers1 < Test::Unit::TestCase
   def test_for_string
     string = "# Some rcov bugs.\nz = \"\nNow is the time\n\"\n\nz =~ \n     /\n      5\n     /ix\n"
     rcov_lines = TraceLineNumbers::lnums_for_str(string)
-    assert_equal([2, 4, 6, 9], rcov_lines)
+    assert_equal([2, 9], rcov_lines)
   end
 
   def test_for_string_array
-    load(@@rcov_file, 0) 
-    rcov_lines = 
+    load(@@rcov_file, 0)
+    rcov_lines =
       TraceLineNumbers.lnums_for_str_array(SCRIPT_LINES__[@@rcov_file])
     assert_equal(@@rcov_lnums, rcov_lines)
   end

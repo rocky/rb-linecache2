@@ -59,9 +59,6 @@
 # and never destroys SCRIPT_LINES__
 SCRIPT_LINES__ = {} unless defined? SCRIPT_LINES__
 
-Encoding.default_external = Encoding::UTF_8
-Encoding.default_internal = Encoding::UTF_8
-
 require 'tempfile'
 require 'digest/sha1'
 require 'set'
@@ -509,7 +506,7 @@ if __FILE__ == $0
     return var ? "" : "not "
   end
 
-  lines = LineCache::getlines(__FILE__)
+  LineCache::getlines(__FILE__)
   puts "#{__FILE__} has #{LineCache.size(__FILE__)} lines"
   line = LineCache::getline(__FILE__, 6)
   puts "The 6th line is\n#{line}"

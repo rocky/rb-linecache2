@@ -19,29 +19,28 @@
 
 module TraceLineNumbers
 
-  def lnums_for_iseq(orig_iseq, uniq=true)
-    lnums = orig_iseq.child_iseqs.map { |iseq|
-      iseq.offsetlines.values.flatten
-    }.flatten.sort
-    uniq ? lnums.uniq : lnums
+  def self.lnums_for_str src
+    name = "#{Time.new.to_i}_#{rand(2**31)}"
+    iseq = RubyVM::InstructionSequence.compile(src, name)
+    lines = {}
+    iseq.disasm.each_line{|line|
+      if /^\d+ (\w+)\s+.+\(\s*(\d+)\)$/ =~ line
+        insn = $1
+        lineno = $2.to_i
+        next unless insn == 'trace'
+        lines[lineno] = true
+        # p [lineno, line]
+      end
+    }
+    lines.keys
   end
-  module_function :lnums_for_iseq
 
   # Return an array of lines numbers that could be
   # stopped at given a file name of a Ruby program.
-  def lnums_for_file(file, uniq=true)
-    lnums_for_iseq(RubyVM::InstructionSequence::compile_file(file),
-                   uniq)
+  def lnums_for_file(file)
+    lnums_for_str(File.read(file))
   end
   module_function :lnums_for_file
-
-  # Return an array of lines numbers that could be
-  # stopped at given a string.
-  def lnums_for_str(string, uniq=true)
-    lnums_for_iseq(RubyVM::InstructionSequence::compile(string),
-                   uniq)
-  end
-  module_function :lnums_for_str
 
   # Return an array of lines numbers that could be
   # stopped at given a string array.

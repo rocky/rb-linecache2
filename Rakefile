@@ -1,6 +1,10 @@
 #!/usr/bin/env rake
 # -*- Ruby -*-
-require 'rubygems'
+#
+# For the `release` task
+#
+require 'bundler/gem_tasks'
+
 require 'rake/testtask'
 require 'fileutils'
 

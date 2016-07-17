@@ -1,10 +1,10 @@
-# [3, 5, 7, 10]
-# Some rcov bugs.  
+# [3, 10]
+# Some rcov bugs.
 z = "
 Now is the time
 "
 
-z =~ 
+z =~
      /
       5
      /ix

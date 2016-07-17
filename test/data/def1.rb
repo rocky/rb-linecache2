@@ -1,7 +1,7 @@
-# [0, 2, 3, 4, 5, 6, 7, 8, 9]
-def 
+# [2, 4, 6, 3, 5, 9]
+def
   a ; end
-def b 
+def b
 end
 def c(
       a=7,
