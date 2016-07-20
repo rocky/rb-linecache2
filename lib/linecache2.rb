@@ -308,7 +308,7 @@ module LineCache
       if opts[:output] && !lines[format]
         lines[format] =
           highlight_string(lines[:plain].join(''),
-                           format, style
+                           format, style.to_sym
                           ).split(/\n/)
       end
       return lines[format]
@@ -324,13 +324,13 @@ module LineCache
   end
 
   def highlight_string(string, output_type, style=:light)
-    @@ruby_highlighter ||= CodeRay::Duo[:ruby, output_type]
-
     # coderay just has one module variable that it uses in colorizing
     # for terminals. No "style" parameters.. So we need to smash/set
     # that variable before encoding.
     CodeRay::Encoders::Terminal::TOKEN_COLORS.merge!(LineCache::ColorScheme[style]) if
-      LineCache::ColorScheme.member?(output_type)
+        LineCache::ColorScheme.member?(style.to_sym)
+    @@ruby_highlighter = CodeRay::Duo[:ruby, output_type]
+
     @@ruby_highlighter.encode(string)
   end
 
