@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#   Copyright (C) 2007-2011, 2014-2015 Rocky Bernstein
+#   Copyright (C) 2007-2011, 2014-2016 Rocky Bernstein
 #   <rockyb@rubyforge.net>
 #
 #    This program is free software; you can redistribute it and/or modify
@@ -66,12 +66,14 @@ require 'tempfile'
 require 'digest/sha1'
 require 'set'
 require_relative 'tracelines'
+require_relative 'linecache2/colors'
 
 # = module LineCache
 # A module to read and cache lines of a Ruby program.
 module LineCache
+
   LineCacheInfo = Struct.new(:stat, :line_numbers, :lines, :path, :sha1) unless
-    defined?(LineCacheInfo)
+      defined?(LineCacheInfo)
 
   # The file cache. The key is a name as would be given by Ruby for
   # __FILE__. The value is a LineCacheInfo object.
@@ -300,11 +302,14 @@ module LineCache
     filename = map_file(filename)
     checkcache(filename) if opts[:reload_on_change]
     format = opts[:output] || :plain
+    style  = opts[:style] || :light
     if @@file_cache.member?(filename)
       lines = @@file_cache[filename].lines
       if opts[:output] && !lines[format]
         lines[format] =
-          highlight_string(lines[:plain].join(''), format).split(/\n/)
+          highlight_string(lines[:plain].join(''),
+                           format, style
+                          ).split(/\n/)
       end
       return lines[format]
     else
@@ -318,15 +323,14 @@ module LineCache
     end
   end
 
-  def highlight_string(string, output_type)
-    require 'rubygems'
-    begin
-      require 'coderay'
-      require 'term/ansicolor'
-    rescue LoadError
-      return string
-    end
+  def highlight_string(string, output_type, style=:light)
     @@ruby_highlighter ||= CodeRay::Duo[:ruby, output_type]
+
+    # coderay just has one module variable that it uses in colorizing
+    # for terminals. No "style" parameters.. So we need to smash/set
+    # that variable before encoding.
+    CodeRay::Encoders::Terminal::TOKEN_COLORS.merge!(LineCache::ColorScheme[style]) if
+      LineCache::ColorScheme.member?(output_type)
     @@ruby_highlighter.encode(string)
   end
 
@@ -448,10 +452,11 @@ module LineCache
   # true if the cache was updated and false if not.
   def update_iseq_cache(iseq, opts)
     return false unless iseq_is_eval?(iseq)
+    style  = opts[:style] || :light
     string = opts[:string] || iseq.eval_source
     lines = {:plain => string.split(/\n/)}
-    lines[opts[:output]] = highlight_string(string, opts[:output]) if
-      opts[:output]
+    lines[opts[:output]] = highlight_string(string, opts[:output],
+                                            style) if opts[:output]
     @@iseq_cache[iseq] =
       LineCacheInfo.new(nil, nil, lines, nil, opts[:sha1])
     return true
@@ -488,9 +493,10 @@ module LineCache
       fp.rewind
       lines = {:plain => fp.readlines}
       fp.close()
+      style = opts[:style] || :light
       lines[opts[:output]] =
-        highlight_string(raw_string, opts[:output]).split(/\n/) if
-        opts[:output]
+        highlight_string(raw_string, opts[:output],
+                         style).split(/\n/) if opts[:output]
     rescue
       ##  print '*** cannot open', path, ':', msg
       return nil
@@ -536,10 +542,10 @@ if __FILE__ == $0
   LineCache::remap_file_lines(__FILE__, 'test2', (10..20), 6)
   puts LineCache::getline('test2', 10)
   puts "Remapped 10th line of test2 is\n#{line}"
-  puts eval("x=1
- LineCache::getline(RubyVM::Frame.get.iseq, 1)")
- puts eval("x=2
- LineCache::getline(RubyVM::Frame.get.iseq, 2)")
+  # puts eval("x=1
+  # LineCache::getline(RubyVM::Frame.get.iseq, 1)")
+  #  puts eval("x=2
+  # LineCache::getline(RubyVM::Frame.get.iseq, 2)")
 
   # # Try new ANSI Terminal syntax coloring
   LineCache::clear_file_cache(__FILE__)
