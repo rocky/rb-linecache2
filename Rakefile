@@ -11,8 +11,9 @@ require 'fileutils'
 ROOT_DIR = File.dirname(__FILE__)
 require File.join %W(#{ROOT_DIR} lib linecache2)
 
+Gemspec_path = 'linecache2.gemspec'
 def gemspec
-  @gemspec ||= eval(File.read('linecache2.gemspec'), binding,
+  @gemspec ||= eval(File.read(Gemspec_path), binding,
                     'lineche2.gemspec')
 end
 
@@ -21,7 +22,7 @@ desc "Build the gem"
 task :package=>:gem
 task :gem=>:gemspec do
   Dir.chdir(ROOT_DIR) do
-    sh "gem build .gemspec"
+    sh "gem build #{Gemspec_path}"
     FileUtils.mkdir_p 'pkg'
     FileUtils.mv("#{gemspec.file_name}", "pkg/")
   end

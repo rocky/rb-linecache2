@@ -8,10 +8,11 @@ FILES = Dir[
   'README.md',
   'Rakefile',
   'lib/*.rb',
+  'lib/linecache2/*.rb',
   'test/*.rb',
   'test/data/*.rb',
   'test/short-file'
-]
+] unless defined?(FILES)
 
 Gem::Specification.new do |s|
   s.name         = "linecache2"
