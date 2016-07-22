@@ -1,6 +1,43 @@
+2016-07-20  rocky <rockyb@rubyforge.org>
+
+	* lib/linecache2.rb, lib/linecache2/colors.rb: Fix up dark color
+	style.  Allow string for style name.
+
+2016-07-20  rocky <rockyb@rubyforge.org>
+
+	* Rakefile, linecache2.gemspec: Administrivia
+
+2016-07-20  rocky <rockyb@rubyforge.org>
+
+	* .gitignore, Gemfile, lib/linecache2.rb, lib/linecache2/colors.rb: 
+	Allow different color styles...  Add style parameter on highlight_string start a colors file
+
+2016-07-17  rocky <rockyb@rubyforge.org>
+
+	* .gemspec, README.md, Rakefile, lib/linecache.rb,
+	lib/linecache2.rb, lib/linecache2/version.rb, linecache2.gemspec,
+	svn2cl_usermap, test/test-linecache.rb: Get ready to move to
+	different repo
+
+2016-07-17  rocky <rockyb@rubyforge.org>
+
+	* .gemspec, Rakefile, lib/linecache.rb, lib/tracelines.rb,
+	test/data/block1.rb, test/data/block2.rb, test/data/case1.rb,
+	test/data/case2.rb, test/data/case3.rb, test/data/case4.rb,
+	test/data/case5.rb, test/data/comments1.rb, test/data/def1.rb,
+	test/data/end.rb, test/data/if5.rb, test/data/if7.rb,
+	test/data/match3.rb, test/data/match3a.rb, test/rcov-bug.rb,
+	test/test-linecache.rb, test/test-lnum.rb, test/test-tracelines.rb: 
+	Adjust for no threadframe support
+
+2015-09-17  rocky <rockyb@rubyforge.org>
+
+	* : commit 90ac9cfa2d136408541a2f15cf9c52c47f82eacb Author: rocky
+	<rockyb@rubyforge.org> Date:   Wed Jan 28 06:12:40 2015 -0500
+
 2015-01-28  rocky <rockyb@rubyforge.org>
 
-	* .gemspec, NEWS, lib/linecache.rb: Get ready for release 1.3.1
+	* .gemspec: Update gemspec for 2.1.5
 
 2014-12-03  rocky <rockyb@rubyforge.org>
 
