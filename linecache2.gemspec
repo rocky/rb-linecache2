@@ -39,5 +39,5 @@ EOF
   s.rdoc_options += ['--title', "LineCache #{LineCache::VERSION} Documentation"]
 
   s.required_ruby_version = '>= 2.0.0'
-  s.add_development_dependency 'bundler', '~> 1.7'
+  s.add_development_dependency 'bundler', '= 2.2.33'
 end
